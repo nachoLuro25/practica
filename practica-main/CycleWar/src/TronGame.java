@@ -32,6 +32,9 @@ public class TronGame extends JPanel implements ActionListener, KeyListener {
     private Image imgPlayer2;
     private int motoSize = 40;
 
+
+
+
     // Variables para habilidades especiales
     private boolean player1AbilityUsed = false;
     private boolean player2AbilityUsed = false;
