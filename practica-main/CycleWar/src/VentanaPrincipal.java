@@ -1,16 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class VentanaPrincipal extends JFrame {
 
-    // Colores por defecto
     private Color colorJugador1 = Color.RED;
     private Color colorJugador2 = Color.BLUE;
 
-    // Imagen de fondo
     private Image fondoMenu;
-    private float brillo = 1.0f; // brillo inicial
 
     public VentanaPrincipal() {
         setTitle("CYCLE WARS - Menú Principal");
@@ -19,41 +15,28 @@ public class VentanaPrincipal extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        // Cargar la imagen de fondo
         fondoMenu = new ImageIcon(getClass().getResource("/assets/fondoMenu.png")).getImage();
 
-        // Panel con fondo dibujado y control de brillo
         JPanel panelConFondo = new JPanel(null) {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g.create();
-                g2d.drawImage(fondoMenu, 0, 0, getWidth(), getHeight(), this);
-
-                // aplicar brillo (oscurece la pantalla si < 1.0f)
-                if (brillo < 1.0f) {
-                    g2d.setColor(new Color(0, 0, 0, (int) ((1 - brillo) * 255)));
-                    g2d.fillRect(0, 0, getWidth(), getHeight());
-                }
-                g2d.dispose();
+                g.drawImage(fondoMenu, 0, 0, getWidth(), getHeight(), this);
             }
         };
 
-        // Estilo retro
         Font fuenteRetro = new Font("Consolas", Font.BOLD, 22);
         Color colorTexto = Color.CYAN;
         Color colorFondo = new Color(0, 0, 0, 180);
 
-        // Botón INICIAR JUEGO
         JButton jugarBtn = new JButton("INICIAR JUEGO");
         jugarBtn.setBounds(600, 300, 220, 50);
         jugarBtn.setFont(fuenteRetro);
         jugarBtn.setForeground(colorTexto);
         jugarBtn.setBackground(colorFondo);
-        jugarBtn.addActionListener(e -> abrirSeleccionColores());
+        jugarBtn.addActionListener(e -> abrirSeleccionJugadores());
         panelConFondo.add(jugarBtn);
 
-        // Botón CONFIGURACIÓN
         JButton configBtn = new JButton("CONFIGURACIÓN");
         configBtn.setBounds(600, 370, 220, 50);
         configBtn.setFont(fuenteRetro);
@@ -62,7 +45,6 @@ public class VentanaPrincipal extends JFrame {
         configBtn.addActionListener(e -> abrirConfiguracion());
         panelConFondo.add(configBtn);
 
-        // Botón ¿CÓMO JUGAR?
         JButton ayudaBtn = new JButton("¿CÓMO JUGAR?");
         ayudaBtn.setBounds(600, 440, 220, 50);
         ayudaBtn.setFont(fuenteRetro);
@@ -71,7 +53,6 @@ public class VentanaPrincipal extends JFrame {
         ayudaBtn.addActionListener(e -> mostrarAyuda());
         panelConFondo.add(ayudaBtn);
 
-        // Botón SALIR
         JButton salirBtn = new JButton("SALIR");
         salirBtn.setBounds(600, 510, 220, 50);
         salirBtn.setFont(fuenteRetro);
@@ -80,78 +61,154 @@ public class VentanaPrincipal extends JFrame {
         salirBtn.addActionListener(e -> System.exit(0));
         panelConFondo.add(salirBtn);
 
-        // Usar panel con fondo como contenido
         setContentPane(panelConFondo);
         setVisible(true);
     }
 
-    // --- Pantalla de selección de colores al iniciar juego ---
-    private void abrirSeleccionColores() {
-        JFrame frameColores = new JFrame("Seleccionar Colores - Cycle Wars");
-        frameColores.setSize(800, 500);
-        frameColores.setLocationRelativeTo(this);
-        frameColores.setLayout(new BorderLayout());
+    // Ventana de selección de jugadores
+    private void abrirSeleccionJugadores() {
+        JFrame frameSeleccion = new JFrame("Seleccionar Colores - Cycle Wars");
+        frameSeleccion.setSize(1200, 550);
+        frameSeleccion.setLocationRelativeTo(this);
+        frameSeleccion.setLayout(new BorderLayout());
 
-        JPanel panelColores = new JPanel(new GridLayout(2, 1, 10, 10));
+        JPanel panelPrincipal = new JPanel(new GridLayout(1, 2, 20, 20));
+        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panelPrincipal.setBackground(Color.BLACK);
 
-        // --- Jugador 1 ---
-        JPanel panelJ1 = new JPanel();
-        panelJ1.setBorder(BorderFactory.createTitledBorder("Color Jugador 1 - Controles: WASD + C"));
-        panelJ1.add(createColorButton("Rojo", Color.RED, true));
-        panelJ1.add(createColorButton("Azul", Color.BLUE, true));
-        panelJ1.add(createColorButton("Amarillo", Color.YELLOW, true));
-        panelJ1.add(createColorButton("Verde", Color.GREEN, true));
+        // Jugador 1
+        JPanel panelJ1 = new JPanel(new BorderLayout());
+        panelJ1.setBackground(Color.BLACK);
 
-        // --- Jugador 2 ---
-        JPanel panelJ2 = new JPanel();
-        panelJ2.setBorder(BorderFactory.createTitledBorder("Color Jugador 2 - Controles: Flechas + M"));
-        panelJ2.add(createColorButton("Rojo", Color.RED, false));
-        panelJ2.add(createColorButton("Azul", Color.BLUE, false));
-        panelJ2.add(createColorButton("Amarillo", Color.YELLOW, false));
-        panelJ2.add(createColorButton("Verde", Color.GREEN, false));
+        JLabel labelJ1 = new JLabel("JUGADOR 1", SwingConstants.CENTER);
+        labelJ1.setFont(new Font("Consolas", Font.BOLD, 26));
+        labelJ1.setForeground(Color.CYAN);
 
-        panelColores.add(panelJ1);
-        panelColores.add(panelJ2);
+        JPanel opcionesJ1 = new JPanel(new GridLayout(2, 2, 10, 10));
+        opcionesJ1.setBackground(Color.BLACK);
+        opcionesJ1.add(crearBotonColor("/assets/perfilRojo.png", Color.RED, true));
+        opcionesJ1.add(crearBotonColor("/assets/perfilAzul.png", Color.BLUE, true));
+        opcionesJ1.add(crearBotonColor("/assets/perfilAmarillo.png", Color.YELLOW, true));
+        opcionesJ1.add(crearBotonColor("/assets/perfilVerde.png", Color.GREEN, true));
 
-        // Botón para comenzar el juego
+        panelJ1.add(labelJ1, BorderLayout.NORTH);
+        panelJ1.add(opcionesJ1, BorderLayout.CENTER);
+
+        // Jugador 2
+        JPanel panelJ2 = new JPanel(new BorderLayout());
+        panelJ2.setBackground(Color.BLACK);
+
+        JLabel labelJ2 = new JLabel("JUGADOR 2", SwingConstants.CENTER);
+        labelJ2.setFont(new Font("Consolas", Font.BOLD, 26));
+        labelJ2.setForeground(Color.CYAN);
+
+        JPanel opcionesJ2 = new JPanel(new GridLayout(2, 2, 10, 10));
+        opcionesJ2.setBackground(Color.BLACK);
+        opcionesJ2.add(crearBotonColor("/assets/perfilRojo.png", Color.RED, false));
+        opcionesJ2.add(crearBotonColor("/assets/perfilAzul.png", Color.BLUE, false));
+        opcionesJ2.add(crearBotonColor("/assets/perfilAmarillo.png", Color.YELLOW, false));
+        opcionesJ2.add(crearBotonColor("/assets/perfilVerde.png", Color.GREEN, false));
+
+        panelJ2.add(labelJ2, BorderLayout.NORTH);
+        panelJ2.add(opcionesJ2, BorderLayout.CENTER);
+
+        panelPrincipal.add(panelJ1);
+        panelPrincipal.add(panelJ2);
+
+        // Botón comenzar
         JButton comenzarBtn = new JButton("COMENZAR");
         comenzarBtn.setFont(new Font("Consolas", Font.BOLD, 20));
         comenzarBtn.addActionListener(e -> {
-            frameColores.dispose();
+            frameSeleccion.dispose();
             abrirJuego();
         });
 
-        frameColores.add(panelColores, BorderLayout.CENTER);
-        frameColores.add(comenzarBtn, BorderLayout.SOUTH);
-        frameColores.setVisible(true);
+        frameSeleccion.add(panelPrincipal, BorderLayout.CENTER);
+        frameSeleccion.add(comenzarBtn, BorderLayout.SOUTH);
+        frameSeleccion.getContentPane().setBackground(Color.BLACK);
+        frameSeleccion.setVisible(true);
     }
 
-    // --- Configuración: solo control de brillo ---
+    // Crea un botón con imagen escalada y selección visual + hover
+    private JButton crearBotonColor(String rutaImagen, Color color, boolean esJugador1) {
+        JButton btn;
+        if (rutaImagen != null) {
+            ImageIcon icon = new ImageIcon(getClass().getResource(rutaImagen));
+            Image img = icon.getImage().getScaledInstance(270, 250, Image.SCALE_SMOOTH);
+            btn = new JButton(new ImageIcon(img));
+            btn.setBackground(Color.BLACK);
+            btn.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 3));
+        } else {
+            btn = new JButton();
+            btn.setBackground(color);
+            btn.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 3));
+        }
+
+        // Acción al hacer clic (seleccionar personaje)
+        btn.addActionListener(e -> {
+            if (esJugador1) {
+                colorJugador1 = color;
+                resetearSeleccion(true, btn);
+            } else {
+                colorJugador2 = color;
+                resetearSeleccion(false, btn);
+            }
+            btn.setBorder(BorderFactory.createLineBorder(Color.CYAN, 4));
+            btn.putClientProperty("seleccionado", true);
+        });
+
+        // Hover con MouseListener
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                if (btn.getClientProperty("seleccionado") == null) {
+                    btn.setBorder(BorderFactory.createLineBorder(Color.CYAN, 2));
+                }
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                if (btn.getClientProperty("seleccionado") == null) {
+                    btn.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 3));
+                }
+            }
+        });
+
+        return btn;
+    }
+
+    // Quita selección de los otros botones y mantiene el nuevo
+    private void resetearSeleccion(boolean esJugador1, JButton botonSeleccionado) {
+        Container parent = botonSeleccionado.getParent();
+        JPanel panel = (JPanel) parent; // Grid con 4 botones
+        for (Component comp : panel.getComponents()) {
+            if (comp instanceof JButton btn) {
+                btn.putClientProperty("seleccionado", null);
+                btn.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 3));
+            }
+        }
+    }
+
     private void abrirConfiguracion() {
-        JFrame frameConfig = new JFrame("Configuración - Brillo");
+        JFrame frameConfig = new JFrame("Configuración - Cycle Wars");
         frameConfig.setSize(400, 200);
         frameConfig.setLocationRelativeTo(this);
+        frameConfig.setLayout(new BorderLayout());
 
-        JSlider sliderBrillo = new JSlider(0, 100, (int) (brillo * 100));
+        JLabel lblBrillo = new JLabel("Brillo del juego", JLabel.CENTER);
+        JSlider sliderBrillo = new JSlider(0, 100, 50);
         sliderBrillo.setMajorTickSpacing(25);
         sliderBrillo.setPaintTicks(true);
         sliderBrillo.setPaintLabels(true);
 
-        sliderBrillo.addChangeListener(e -> {
-            brillo = sliderBrillo.getValue() / 100f;
-            repaint(); // actualiza el fondo
-        });
-
-        frameConfig.add(new JLabel(" Ajustar brillo:"), BorderLayout.NORTH);
+        frameConfig.add(lblBrillo, BorderLayout.NORTH);
         frameConfig.add(sliderBrillo, BorderLayout.CENTER);
+
         frameConfig.setVisible(true);
     }
 
-    // --- Muestra la ayuda (controles + habilidades) ---
     private void mostrarAyuda() {
         String mensaje = """
-        🎮 ¿CÓMO JUGAR CYCLE WARS?
-
         📋 CONTROLES:
         • Jugador 1: WASD para moverse, C para habilidad
         • Jugador 2: Flechas para moverse, M para habilidad
@@ -196,32 +253,8 @@ public class VentanaPrincipal extends JFrame {
         JOptionPane.showMessageDialog(this, scroll, "¿Cómo jugar?", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    // --- Botones de colores ---
-    private JButton createColorButton(String text, Color color, boolean isPlayer1) {
-        JButton button = new JButton(text);
-        button.setBackground(color);
-        button.setOpaque(true);
-        button.setFont(new Font("Arial", Font.BOLD, 14));
-
-        if (color == Color.YELLOW || color == Color.GREEN) {
-            button.setForeground(Color.BLACK);
-        } else {
-            button.setForeground(Color.WHITE);
-        }
-
-        button.addActionListener(e -> {
-            if (isPlayer1) {
-                colorJugador1 = color;
-            } else {
-                colorJugador2 = color;
-            }
-        });
-        return button;
-    }
-
-    // --- Abre la ventana real del juego ---
     private void abrirJuego() {
-        JFrame frameJuego = new JFrame("Juego de Motos Tron - Cycle Wars");
+        JFrame frameJuego = new JFrame("Juego de Motos Tron - 2 Jugadores con Habilidades");
         frameJuego.add(new TronGame(colorJugador1, colorJugador2));
         frameJuego.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frameJuego.pack();
