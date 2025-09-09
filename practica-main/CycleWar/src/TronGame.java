@@ -32,9 +32,6 @@ public class TronGame extends JPanel implements ActionListener, KeyListener {
     private Image imgPlayer2;
     private int motoSize = 40;
 
-
-
-
     // Variables para habilidades especiales
     private boolean player1AbilityUsed = false;
     private boolean player2AbilityUsed = false;
@@ -152,9 +149,9 @@ public class TronGame extends JPanel implements ActionListener, KeyListener {
         player1AbilityUsed = true;
 
         if (player1Color == Color.BLUE) {
-            // Habilidad Azul - Velocidad
+            // Habilidad Azul - Velocidad (MODIFICADO: 3 segundos)
             player1SpeedBoost = true;
-            player1SpeedTimer = 50; // 5 segundos a 100ms = 50 ticks
+            player1SpeedTimer = 30; // 3 segundos a 100ms = 30 ticks
             speedTimer1 = new Timer(DELAY, e -> {
                 player1SpeedTimer--;
                 if (player1SpeedTimer <= 0) {
@@ -178,7 +175,7 @@ public class TronGame extends JPanel implements ActionListener, KeyListener {
             invisTimer1.start();
 
         } else if (player1Color == Color.RED) {
-            // Habilidad Rojo - Explosión
+            // Habilidad Rojo - Explosión (MODIFICADO: 5 bloques de rango)
             explodeTrails(player1, player1Trail);
 
         } else if (player1Color == Color.GREEN) {
@@ -203,9 +200,9 @@ public class TronGame extends JPanel implements ActionListener, KeyListener {
         player2AbilityUsed = true;
 
         if (player2Color == Color.BLUE) {
-            // Habilidad Azul - Velocidad
+            // Habilidad Azul - Velocidad (MODIFICADO: 3 segundos)
             player2SpeedBoost = true;
-            player2SpeedTimer = 50; // 5 segundos
+            player2SpeedTimer = 30; // 3 segundos
             speedTimer2 = new Timer(DELAY, e -> {
                 player2SpeedTimer--;
                 if (player2SpeedTimer <= 0) {
@@ -229,7 +226,7 @@ public class TronGame extends JPanel implements ActionListener, KeyListener {
             invisTimer2.start();
 
         } else if (player2Color == Color.RED) {
-            // Habilidad Rojo - Explosión
+            // Habilidad Rojo - Explosión (MODIFICADO: 5 bloques de rango)
             explodeTrails(player2, player2Trail);
 
         } else if (player2Color == Color.GREEN) {
@@ -247,9 +244,9 @@ public class TronGame extends JPanel implements ActionListener, KeyListener {
         }
     }
 
-    // Explosión que destruye estelas cercanas
+    // Explosión que destruye estelas cercanas (MODIFICADO: rango de 5 bloques)
     private void explodeTrails(Point center, LinkedList<Point> excludeTrail) {
-        int explosionRange = UNIT; // 1 bloque de rango
+        int explosionRange = UNIT * 5; // MODIFICADO: 5 bloques de rango (era 3)
 
         // Destruir estelas del jugador 1
         if (excludeTrail != player1Trail) {
@@ -365,7 +362,7 @@ public class TronGame extends JPanel implements ActionListener, KeyListener {
         if (player2AbilityUsed) {
             p2Status += "USADA";
         } else {
-            p2Status += getAbilityName(player2Color) + " (C)";
+            p2Status += getAbilityName(player2Color) + " (M)";
         }
         g.drawString(p2Status, WIDTH - 200, 30);
 
